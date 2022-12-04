@@ -1,0 +1,114 @@
+<template>
+  <div class="container">
+    <div class="row">
+
+      <div class="col-12">
+        
+        
+      </div>
+      <!-- /.col-12 -->
+      
+
+
+    </div>
+    <!-- /.row -->
+    <div class="row">
+
+      <div class="col-8">
+        
+        <!-- DevList -->
+        
+        <DevMap v-if="click" :devs="devs" :links = "links" :packets = "packets" :key = "key" />
+        <StartMap v-if="!click"/>
+
+      </div>
+      <!-- /.col6 -->
+      <div class="col-4">
+        <div class="center">
+          <button class="teal" @click="Clicked" id="startbtn">Start/End</button>
+          <button class="teal" @click="Paused" id="pausebtn" v-if="click">Pause</button>
+        </div>
+        
+        
+        <LoadData v-if="!click"/>
+        <SimLog v-if="click" :packets="packets"/>
+      </div>
+      <!-- /.col6 -->
+    </div>
+    <!-- /.row -->
+  </div>
+  <!-- /.container -->
+</template>
+
+<script>
+import axios from 'axios'
+import DevMap from './DevMap.vue'
+import LoadData from './LoadData.vue'
+import SimLog from './SimLog.vue'
+import StartMap from './StartMap.vue'
+
+export default {
+
+  name: 'SimVis',
+  data: function () {
+        return {
+            devs: [],
+            links: [],
+            packets: [],
+            click :false,
+            pause : false
+        };
+    },
+    mounted:
+    function(){
+      setInterval(async ()=>{
+        if(!this.click) return
+        if(this.pause) return
+
+        await axios.get("http://127.0.0.1:5000/api/simulation/extract-frame",{
+        headers:{
+          'Accept': 'application/json'
+        }
+      })
+            .then((r) => {
+            this.devs = r.data.devices;
+            this.links = r.data.links;
+            this.packets = r.data.packets;
+        });
+      },3000)
+    }
+
+    ,
+    methods:{
+      Clicked:function(){
+        console.log(this.click)
+        if (!this.click) this.click = true;
+        else this.click = false;
+      },
+
+      Paused:function(){
+        if (!this.pause) this.pause = true;
+        else this.pause = false;
+      }
+
+    },
+      
+    components: { DevMap, LoadData, SimLog, StartMap }
+}
+</script>
+
+<!-- Add "scoped" attribute to limit CSS to this component only -->
+<style lang="scss" scoped>
+.row{
+  padding-top: 10px;
+  display:flex;
+  justify-content: center;
+  align-items:flex-start;
+}
+
+.center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+</style>

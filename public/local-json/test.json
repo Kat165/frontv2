@@ -1,0 +1,158 @@
+[ 
+  {
+  "id": 299,
+  "name": "dev1",
+  "latitude": 50.068963,
+  "longitude":19.907302,
+  "paths":[
+    {"latitude": 50.067400,
+    "longitude":19.907933},
+    {"latitude": 50.068712,
+    "longitude":19.918828},
+    {"latitude": 50.074366,
+    "longitude":19.910993}
+  ]
+  },
+  {
+  "id": 34,
+  "name": "dev2",
+  "latitude": 50.067400,
+  "longitude":19.907933,
+  "paths":[
+    {"latitude": 50.063837,
+    "longitude":19.901198},
+    {"latitude": 50.068712,
+    "longitude":19.918828},
+    {"latitude": 50.070867,
+    "longitude":19.907302}]
+  },
+  {
+  "id": 404,
+  "name": "dev22",
+  "latitude": 50.068712,
+  "longitude":19.918828,
+  "paths":[
+    {"latitude": 50.067306,
+    "longitude":19.901198},
+    {"latitude": 50.070867,
+    "longitude":19.907933},
+    {"latitude": 50.063837,
+    "longitude":19.910993}]
+  },{
+  "id": 15,
+  "name": "dev7",
+  "latitude": 50.074366,
+  "longitude":19.910993,
+  "paths":[
+    {"latitude": 50.068712,
+    "longitude":19.918828},
+    {"latitude": 50.070867,
+    "longitude":19.907933},
+    {"latitude": 50.063837,
+    "longitude":19.901198}]
+  },{
+  "id": 303,
+  "name": "dev17",
+  "latitude": 50.070867,
+  "longitude":19.924309,
+  "paths":[
+    {"latitude": 50.068712,
+    "longitude":19.918828},
+    {"latitude": 50.063837,
+    "longitude":19.901198},
+    {"latitude": 50.067306,
+    "longitude":19.907933}]
+  },{
+  "id": 85,
+  "name": "dev75",
+  "latitude": 50.063837,
+  "longitude":19.901198,
+  "paths":[
+    {"latitude": 50.063837,
+    "longitude":19.910993},
+    {"latitude": 50.063837,
+    "longitude":19.901198},
+    {"latitude": 50.070867,
+    "longitude":19.907302}]
+  },{
+  "id": 33,
+  "name": "dev145",
+  "latitude": 50.067306,
+  "longitude":19.897676,
+  "paths":[
+    {"latitude": 50.068963,
+    "longitude":19.907302},
+    {"latitude": 50.068712,
+    "longitude":19.918828},
+    {"latitude": 50.070867,
+    "longitude":19.907302}]
+  },{
+  "id": 38,
+  "name": "dev14",
+  "latitude": 50.067306,
+  "longitude":19.901198,
+  "paths":[
+    {"latitude": 50.067400,
+    "longitude":19.907933},
+    {"latitude": 50.068712,
+    "longitude":19.918828},
+    {"latitude": 50.067306,
+    "longitude":19.907933}]
+  },{
+    "id": 67,
+    "name": "dev45",
+    "latitude": 50.070867,
+    "longitude":19.897676,
+    "paths":[]
+  },{
+    "id": 55,
+    "name": "dev188",
+    "latitude": 50.067306,
+    "longitude":19.907933,
+    "paths":[]
+  },{
+    "id": 88,
+    "name": "dev199",
+    "latitude": 50.070867,
+    "longitude":19.907933,
+    "paths":[]
+  },{
+    "id": 94,
+    "name": "dev21",
+    "latitude": 50.067400,
+    "longitude":19.918828,
+    "paths":[]
+  },{
+    "id": 156,
+    "name": "dev367",
+    "latitude": 50.067306,
+    "longitude":19.907302,
+    "paths":[]
+  },{
+    "id": 287,
+    "name": "dev382",
+    "latitude": 50.067400,
+    "longitude":19.897676,
+    "paths":[]
+  },{
+    "id": 91,
+    "name": "dev448",
+    "latitude": 50.067306,
+    "longitude":19.907302,
+    "paths":[]
+  },{
+    "id": 94,
+    "name": "dev48",
+    "latitude": 50.063837,
+    "longitude":19.910993,
+    "paths":[]
+  },{
+    "id": 97,
+    "name": "dev44",
+    "latitude": 50.070867,
+    "longitude":19.907302,
+    "paths":[]
+  }
+]
+
+  
