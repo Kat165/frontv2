@@ -23,11 +23,11 @@ export default{
             //var markers = L.markerClusterGroup();
             var markers = [];
             for (let index = 0; index < this.devs.length; index++) {
-                var marker = L.marker([this.devs[index].path[0].latitude,this.devs[index].path[0].longitude]);
+                var marker = L.marker([this.devs[index].path[0].lat,this.devs[index].path[0].lon]);
                 marker.bindPopup(this.devs[index].name + '<br>' + 
-                    this.devs[index].path[0].latitude + '<br>' + 
-                    this.devs[index].path[0].longitude + '<br>' + 
-                    this.devs[index].path[0].height).openPopup();
+                    this.devs[index].path[0].lat + '<br>' + 
+                    this.devs[index].path[0].lon + '<br>' + 
+                    this.devs[index].path[0].alt).openPopup();
                 //markers.addLayer(marker);
                 markers.push(marker);
                 //marker.addTo(map);
@@ -101,8 +101,7 @@ export default{
     },
     mounted:function(){
 
-        this.getDevs()
-
+        setInterval(()=>{this.getDevs();},3000)
         this.createMap();
 
 

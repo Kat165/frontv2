@@ -18,7 +18,7 @@
         
         <!-- DevList -->
         
-        <DevMap v-if="click" :devs="devs" :links = "links" :packets = "packets" :key = "key" />
+        <DevMap v-if="click" :devs="devs" :time = "time" :packets = "packets" :key = "key" :pause = "pause" :isReady="isReady"/>
         <StartMap v-if="!click"/>
 
       </div>
@@ -31,7 +31,7 @@
         
         
         <LoadData v-if="!click"/>
-        <SimLog v-if="click" :packets="packets"/>
+        <SimLog v-if="click" :packets="packets" :pause="pause" :isReady="isReady"/>
       </div>
       <!-- /.col6 -->
     </div>
@@ -53,10 +53,11 @@ export default {
   data: function () {
         return {
             devs: [],
-            links: [],
+            time: Number,
             packets: [],
             click :false,
-            pause : false
+            pause : false,
+            isReady: false
         };
     },
     mounted:
@@ -65,6 +66,16 @@ export default {
         if(!this.click) return
         if(this.pause) return
 
+        await axios.get("http://127.0.0.1:5000/api/simulation/is-chunk-ready",{
+        headers:{
+          'Accept': 'application/json'
+        }
+      })
+            .then((r) => {
+            this.isReady = r.data
+            if(!this.isReady)console.log("Jeszcze nie gotowe")
+        });
+        if(!this.isReady) return
         await axios.get("http://127.0.0.1:5000/api/simulation/extract-frame",{
         headers:{
           'Accept': 'application/json'
@@ -72,7 +83,7 @@ export default {
       })
             .then((r) => {
             this.devs = r.data.devices;
-            this.links = r.data.links;
+            this.time = r.data.time;
             this.packets = r.data.packets;
         });
       },3000)
@@ -81,7 +92,6 @@ export default {
     ,
     methods:{
       Clicked:function(){
-        console.log(this.click)
         if (!this.click) this.click = true;
         else this.click = false;
       },

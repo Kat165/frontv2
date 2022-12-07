@@ -12,28 +12,40 @@ export default{
     name: "DevMap",
     props:{
         devs: Array,
-        links: Array,
-        packets: Array
+        time: Number,
+        packets: Array,
+        pause: Boolean,
+        isReady: Boolean,
 
     },
     data: function () {
         return {
             key:0,
+            tab:[],
+            timeold:0
         };
     },
     
     methods:{
         
         show_nodes(map){
+            if(this.$props.pause) return
+            if(!this.$props.isReady) return
 
             if(this.$props.devs.length == 0){
                 console.warn("Nie udało się załadować danych z devs w DevMap - spróbuj ponownie")
             }
             //var markers = L.markerClusterGroup();
+
+            
             var markers = [];
             for (let index = 0; index < this.$props.devs.length; index++) {
-                var marker = L.marker([this.$props.devs[index].lat,this.devs[index].lon]);
+                
+                var marker = L.marker([this.$props.devs[index].lat,this.devs[index].lon])
                 marker.bindPopup(this.$props.devs[index].name + `<p>Wysokość:</p>` + this.$props.devs[index].alt).openPopup();
+                 
+                
+                
                 //markers.addLayer(marker);
                 markers.push(marker);
                 //marker.addTo(map);
@@ -50,7 +62,59 @@ export default{
 
             
         },
+        show_nodes2(map){
+            if(this.$props.pause) return
+            if(!this.$props.isReady) return
+            if(this.$props.devs.length == 0){
+                console.warn("Nie udało się załadować danych z devs w DevMap - spróbuj ponownie")
+            }
+            //var markers = L.markerClusterGroup();
+
+            var packages = []
+            
+            for(let index = 0; index < this.$props.packets.length; index++){
+                if(this.$props.packets[index].destination == undefined){
+                    packages.push(this.$props.packets[index].source)
+                }
+            }
+
+            var greenIcon = new L.Icon({
+                iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
+                shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+                iconSize: [25, 41],
+                iconAnchor: [12, 41],
+                popupAnchor: [1, -34],
+                shadowSize: [41, 41]
+            });
+            
+            var markers = [];
+            for (let index = 0; index < this.$props.devs.length; index++) {
+                
+                for(var k = 0; k< packages.length;k++)
+                {
+                    if(this.$props.devs[index].name == packages[k]){
+                        var marker = L.marker([this.$props.devs[index].lat,this.devs[index].lon], {icon: greenIcon})
+                        marker.bindPopup(this.$props.devs[index].name + `<p>Wysokość:</p>` + this.$props.devs[index].alt).openPopup();
+                        markers.push(marker);
+                    }
+                }
+                
+                //markers.addLayer(marker);
+                
+                //marker.addTo(map);
+                
+            }
+
+            var markerLayer = L.layerGroup(markers);
+            markerLayer.addTo(map)
+
+            
+            setInterval(()=>{this.clearMap(map,markers);},3000)
+        },
+        
         show_paths(map){
+            if(this.$props.pause) return
+            if(!this.$props.isReady) return
             if(this.$props.devs.length == 0){
                 console.warn("Nie udało się załadować danych z devs w DevMap - spróbuj ponownie")
             }
@@ -69,36 +133,56 @@ export default{
             }*/
 
             var packages = []
+            
             for(let index = 0; index < this.$props.packets.length; index++){
-                if(this.$props.packets[index].lost)
-                packages.push([this.$props.packets[index].destination,this.$props.packets[index].source,{color: 'red'}])
-                else
-                packages.push([this.$props.packets[index].destination,this.$props.packets[index].source,{color: 'green'}])
-
+                if(this.$props.packets[index].destination != undefined){
+                    if(this.$props.packets[index].lost){
+                        packages.push([this.$props.packets[index].destination,this.$props.packets[index].source,{color: 'red'},this.$props.packets[index].duration])
+                    }else
+                        packages.push([this.$props.packets[index].destination,this.$props.packets[index].source,{color: 'green'},this.$props.packets[index].duration])
+                }
             }
             var places = [];
             for(let i = 0; i<this.$props.devs.length; i++){
                 places.push([this.$props.devs[i].name,this.$props.devs[i].lat,this.$props.devs[i].lon])
             }
-            
             var cords = []
             for(let i = 0; i<packages.length;i++){
                 var line=[]
                 for(let j = 0; j<packages[i].length;j++){
                     
                     for(let k = 0;k<places.length;k++){
+                        if(packages[i][j] == 'alfa'){
+                            console.log("!!!!!!!!!",packages[i][j])
+                        }
+
                         
                         if (places[k][0] == packages[i][j]){
-                            line.push([places[k][1],places[k][2],packages[i][2]])
+                            try{
+                                line.push([places[k][1],places[k][2],packages[i][2],packages[i][3]])
+                            }catch{
+                                console.log("weird bug with packages[i][3]",i)
+                                console.log(packages)
+                            }
+                            
                     }
                     
                 }
                 
                 if(line.length>1){
-                    cords.push(L.polyline([[line[0][0],line[0][1]],[line[1][0],line[1][1]]],line[0][2]))
+                    this.tab.push([[[line[0][0],line[0][1]],[line[1][0],line[1][1]]],line[0][2],line[0][3]])
+                    //cords.push(L.polyline([[line[0][0],line[0][1]],[line[1][0],line[1][1]]],line[0][2]))
                 }
             }}
-            
+
+            for (var i = 0;i< this.tab.length;i++){
+                if(this.tab[i][2]>0){
+                    cords.push(L.polyline(this.tab[i][0],this.tab[i][1]))
+                }
+                
+                this.tab[i][2] = this.tab[i][2]-(this.$props.time - this.timeold)
+                
+            }
             //var polylines = L.polyline(cords);
 
             var markerLayer = L.layerGroup(cords);
@@ -120,9 +204,9 @@ export default{
                     }
                 }
             }*/
+            this.timeold = this.$props.time
             setInterval(()=>{this.clearMap(map,cords);},3000)
-            
-            
+                       
         },
         clearMap(map,markers){/*
             map.eachLayer(function(layer) {
@@ -131,6 +215,9 @@ export default{
                 }
                 
             })*/
+
+            if(this.$props.pause) return
+            if(!this.$props.isReady) return
 
             markers.forEach(function(marker) {
                 map.removeLayer(marker)
@@ -148,6 +235,7 @@ export default{
             
             
             setInterval(()=>{this.show_nodes(map);},3000);
+            setInterval(()=>{this.show_nodes2(map)},3000);
             setInterval(()=>{this.show_paths(map);},3000);
             
             
@@ -161,6 +249,7 @@ export default{
         
     },
     mounted:function(){
+        
         
         this.createMap();
 /*
