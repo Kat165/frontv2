@@ -1,5 +1,13 @@
 <template>
+    <h1>{{ time }}</h1>
      <div id="map"></div>
+     <div id = "Stats">
+        <h1>Stats</h1>
+        <table class="tab">
+            <tr>name, lost, delivered, source</tr>
+            <tr :key = "index" v-for="(dev,index) in stats">{{dev}}</tr>
+        </table>
+     </div>
 </template>
 
 <script>
@@ -15,14 +23,14 @@ export default{
         time: Number,
         packets: Array,
         pause: Boolean,
-        isReady: Boolean,
 
     },
     data: function () {
         return {
             key:0,
             tab:[],
-            timeold:0
+            timeold:0,
+            stats:[]
         };
     },
     
@@ -30,7 +38,6 @@ export default{
         
         show_nodes(map){
             if(this.$props.pause) return
-            if(!this.$props.isReady) return
 
             if(this.$props.devs.length == 0){
                 console.warn("Nie udało się załadować danych z devs w DevMap - spróbuj ponownie")
@@ -64,7 +71,6 @@ export default{
         },
         show_nodes2(map){
             if(this.$props.pause) return
-            if(!this.$props.isReady) return
             if(this.$props.devs.length == 0){
                 console.warn("Nie udało się załadować danych z devs w DevMap - spróbuj ponownie")
             }
@@ -114,7 +120,6 @@ export default{
         
         show_paths(map){
             if(this.$props.pause) return
-            if(!this.$props.isReady) return
             if(this.$props.devs.length == 0){
                 console.warn("Nie udało się załadować danych z devs w DevMap - spróbuj ponownie")
             }
@@ -205,6 +210,41 @@ export default{
                 }
             }*/
             this.timeold = this.$props.time
+
+            //stats
+            //[name,lost,notlost,sourceonly]
+
+            for(let index = 0; index < this.$props.devs.length; index++){
+                if(this.stats.length>=this.$props.devs.length)
+                    continue
+                this.stats.push([this.$props.devs[index].name,0,0,0])
+            }
+
+            for(let index = 0; index < this.$props.packets.length; index++){
+                if(this.$props.packets[index].destination != undefined){
+                    if(this.$props.packets[index].lost){
+                        for (let j = 0; j < this.stats.length; j++) {
+                            if(this.$props.packets[index].source == this.stats[j][0]){
+                                this.stats[j][1] =  parseInt(1 + parseInt(this.stats[j][1]))
+                            }
+                                
+                        }
+                        }else{
+                            for (let j = 0; j < this.stats.length; j++) {
+                            if(this.$props.packets[index].source == this.stats[j][0])
+                                this.stats[j][2] = parseInt(1 + parseInt(this.stats[j][2]))
+                            }
+                        }
+                        
+                }
+                else{
+                    for (let j = 0; j < this.stats.length; j++) {
+                            if(this.$props.packets[index].source == this.stats[j][0])
+                                this.stats[j][3] = parseInt(1 + parseInt(this.stats[j][3])) 
+                    }
+                }
+            }
+
             setInterval(()=>{this.clearMap(map,cords);},3000)
                        
         },
@@ -217,7 +257,6 @@ export default{
             })*/
 
             if(this.$props.pause) return
-            if(!this.$props.isReady) return
 
             markers.forEach(function(marker) {
                 map.removeLayer(marker)

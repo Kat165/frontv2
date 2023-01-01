@@ -18,7 +18,7 @@
         
         <!-- DevList -->
         
-        <DevMap v-if="click" :devs="devs" :time = "time" :packets = "packets" :key = "key" :pause = "pause" :isReady="isReady"/>
+        <DevMap v-if="click" :devs="devs" :time = "time" :packets = "packets" :key = "key" :pause = "pause"/>
         <StartMap v-if="!click"/>
 
       </div>
@@ -31,7 +31,7 @@
         
         
         <LoadData v-if="!click"/>
-        <SimLog v-if="click" :packets="packets" :pause="pause" :isReady="isReady"/>
+        <SimLog v-if="click" :packets="packets" :pause="pause"/>
       </div>
       <!-- /.col6 -->
     </div>
@@ -56,15 +56,14 @@ export default {
             time: Number,
             packets: [],
             click :false,
-            pause : false,
-            isReady: false
+            pause : false
         };
     },
     mounted:
     function(){
       setInterval(async ()=>{
         if(!this.click) return
-        if(this.pause) return
+        if(this.pause) return/*
 
         await axios.get("http://127.0.0.1:5000/api/simulation/is-chunk-ready",{
         headers:{
@@ -75,7 +74,7 @@ export default {
             this.isReady = r.data
             if(!this.isReady)console.log("Jeszcze nie gotowe")
         });
-        if(!this.isReady) return
+        if(!this.isReady) return*/
         await axios.get("http://127.0.0.1:5000/api/simulation/extract-frame",{
         headers:{
           'Accept': 'application/json'

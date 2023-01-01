@@ -9,13 +9,11 @@ export default{
     name: 'SimLog',
     props:{
         packets:Array,
-        pause: Boolean,
-        isReady: Boolean,
+        pause: Boolean
     },
     methods:{
         appendLogs(){
             if(this.$props.pause) return
-            if(!this.$props.isReady) return
             if(this.$props.packets.length == 0) return
             
             
