@@ -58,7 +58,32 @@ export default{
     name: 'LoadData',
     methods:{
         Clicked: async function addDevice(){
-            axios({
+            let _data = document.querySelector('#data').value;
+            let _int = document.querySelector('#int').value;
+            let _len = document.querySelector('#len').value;
+            let _dest = document.querySelector('#dest').value;
+            console.log(_data)
+            if(_data == ''){
+                axios({
+                method: 'post',
+                url: 'http://127.0.0.1:5000/api/devices',
+                data: {
+                    name: document.querySelector('#name').value,
+                    tx_power:document.querySelector('#tx-power').value,
+                    path: [
+                        {
+                            time: document.querySelector('#time').value,
+                            lat: document.querySelector('#lan').value,
+                            lon: document.querySelector('#lon').value,
+                            alt: document.querySelector('#he').value
+                        }
+                    ],
+                    transmissions:[ ]
+
+                }
+            });
+            }else{
+                axios({
                 method: 'post',
                 url: 'http://127.0.0.1:5000/api/devices',
                 data: {
@@ -74,17 +99,20 @@ export default{
                     ],
                     transmissions:[
                         {
-                            data: document.querySelector('#data').value,
-                            interval: document.querySelector('#int').value,
-                            length: document.querySelector('#len').value,
-                            destination: document.querySelector('#dest').value
+                            data: _data,
+                            interval: _int,
+                            length: _len,
+                            destination: _dest
                         }
                     ]
 
                 }
             });
+            }
+                
+            
             console.log("added")
-
+/*
             document.querySelector('#name').value ='';
             document.querySelector('#tx-power').value ='';
             document.querySelector('#time').value ='';
@@ -94,7 +122,7 @@ export default{
             document.querySelector('#data').value ='';
             document.querySelector('#int').value ='';
             document.querySelector('#len').value ='';
-            document.querySelector('#dest').value ='';
+            document.querySelector('#dest').value ='';*/
         },
 
         async DeleteAll(){
