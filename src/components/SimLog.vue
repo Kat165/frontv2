@@ -40,8 +40,8 @@ export default{
                 payload: ${this.$props.packets[index].payload},
                 rssi: ${this.$props.packets[index].rssi},
                 snr: ${this.$props.packets[index].snr},
-                source: ${this.$props.packets[index].source},
-                tx: ${this.$props.packets[index].tx} </p>
+                tx: ${this.$props.packets[index].tx} ,
+                rx: ${this.$props.packets[index].rx}</p>
                 `
                 htmls.push(partt)}
 

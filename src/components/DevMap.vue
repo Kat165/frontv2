@@ -4,7 +4,7 @@
      <div id = "Stats">
         <h1>Stats</h1>
         <table class="tab">
-            <tr>name, lost, delivered, source</tr>
+            <tr>name, lost (tx), delivered (tx), source</tr>
             <tr :key = "index" v-for="(dev,index) in stats">{{dev}}</tr>
         </table>
      </div>
@@ -142,9 +142,9 @@ export default{
             for(let index = 0; index < this.$props.packets.length; index++){
                 if(this.$props.packets[index].destination != undefined){
                     if(this.$props.packets[index].lost){
-                        packages.push([this.$props.packets[index].destination,this.$props.packets[index].source,{color: 'red'},this.$props.packets[index].duration])
+                        packages.push([this.$props.packets[index].rx,this.$props.packets[index].tx,{color: 'red'},this.$props.packets[index].duration])
                     }else
-                        packages.push([this.$props.packets[index].destination,this.$props.packets[index].source,{color: 'green'},this.$props.packets[index].duration])
+                        packages.push([this.$props.packets[index].rx,this.$props.packets[index].tx,{color: 'green'},this.$props.packets[index].duration])
                 }
             }
             var places = [];
@@ -212,7 +212,7 @@ export default{
             this.timeold = this.$props.time
 
             //stats
-            //[name,lost,notlost,sourceonly]
+            //[name,lost (tx),notlost (tx),sourceonly]
 
             for(let index = 0; index < this.$props.devs.length; index++){
                 if(this.stats.length>=this.$props.devs.length)
@@ -224,14 +224,14 @@ export default{
                 if(this.$props.packets[index].destination != undefined){
                     if(this.$props.packets[index].lost){
                         for (let j = 0; j < this.stats.length; j++) {
-                            if(this.$props.packets[index].source == this.stats[j][0]){
+                            if(this.$props.packets[index].tx == this.stats[j][0]){
                                 this.stats[j][1] =  parseInt(1 + parseInt(this.stats[j][1]))
                             }
                                 
                         }
                         }else{
                             for (let j = 0; j < this.stats.length; j++) {
-                            if(this.$props.packets[index].source == this.stats[j][0])
+                            if(this.$props.packets[index].tx == this.stats[j][0])
                                 this.stats[j][2] = parseInt(1 + parseInt(this.stats[j][2]))
                             }
                         }
