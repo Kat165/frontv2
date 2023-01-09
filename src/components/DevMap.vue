@@ -64,7 +64,7 @@ export default{
             markerLayer.addTo(map)
 
             
-            setInterval(()=>{this.clearMap(map,markers);},3000)
+            setInterval(()=>{this.clearMap(map,markers);},200)
 
 
             
@@ -115,7 +115,7 @@ export default{
             markerLayer.addTo(map)
 
             
-            setInterval(()=>{this.clearMap(map,markers);},3000)
+            setInterval(()=>{this.clearMap(map,markers);},200)
         },
         
         show_paths(map){
@@ -245,7 +245,7 @@ export default{
                 }
             }
 
-            setInterval(()=>{this.clearMap(map,cords);},3000)
+            setInterval(()=>{this.clearMap(map,cords);},200)
                        
         },
         clearMap(map,markers){/*
@@ -273,9 +273,9 @@ export default{
             }).addTo(map);
             
             
-            setInterval(()=>{this.show_nodes(map);},3000);
-            setInterval(()=>{this.show_nodes2(map)},3000);
-            setInterval(()=>{this.show_paths(map);},3000);
+            setInterval(()=>{this.show_nodes(map);},200);
+            setInterval(()=>{this.show_nodes2(map)},200);
+            setInterval(()=>{this.show_paths(map);},200);
             
             
         },

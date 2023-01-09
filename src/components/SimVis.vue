@@ -85,7 +85,7 @@ export default {
             this.time = r.data.time;
             this.packets = r.data.packets;
         });
-      },3000)
+      },200)
     }
 
     ,

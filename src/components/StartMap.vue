@@ -38,7 +38,7 @@ export default{
             var markerLayer = L.layerGroup(markers);
             markerLayer.addTo(map)
 
-            setInterval(()=>{this.clearMap(map,markers);},5000)
+            setInterval(()=>{this.clearMap(map,markers);},200)
 
 
         },
@@ -68,7 +68,7 @@ export default{
             }).addTo(map);  
 
             
-            setInterval(()=>{ this.show_nodes(map);},5000)
+            setInterval(()=>{ this.show_nodes(map);},200)
 
             function onMapClick(e) {
                 console.log(e.latlng);
@@ -101,7 +101,7 @@ export default{
     },
     mounted:function(){
 
-        setInterval(()=>{this.getDevs();},3000)
+        setInterval(()=>{this.getDevs();},200)
         this.createMap();
 
 

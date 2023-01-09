@@ -22,6 +22,7 @@ export default{
 
 
             var htmls = []
+            console.log(this.$props.packets)
         
             for(var index = 0; index<this.$props.packets.length;index++){
 
@@ -55,7 +56,7 @@ export default{
     },
     mounted:function(){
         
-        setInterval(()=>{this.appendLogs();},3000);
+        setInterval(()=>{this.appendLogs();},200);
         
     }
 
