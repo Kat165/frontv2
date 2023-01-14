@@ -18,7 +18,8 @@
         
         <!-- DevList -->
         
-        <DevMap v-if="click" :devs="devs" :time = "time" :packets = "packets" :key = "key" :pause = "pause"/>
+        <DevMap v-if="click" :devs="devs" :time = "time" :packets = "packets" :key = "key" :pause = "pause"
+         :delay="delay" :delivery_r="delivery_r" :normalized_routing_load="normalized_routing_load"/>
         <StartMap v-if="!click"/>
 
       </div>
@@ -52,41 +53,63 @@ export default {
   name: 'SimVis',
   data: function () {
         return {
+            data: [],
             devs: [],
             time: Number,
             packets: [],
             click :false,
-            pause : false
+            pause : false,
+            index:0,
+            status:Number,
+            delivery_r:Number,
+            delay:Number,
+            normalized_routing_load:Number
+
         };
     },
     mounted:
-    function(){
+    function (){
       setInterval(async ()=>{
         if(!this.click) return
-        if(this.pause) return/*
-
-        await axios.get("http://127.0.0.1:5000/api/simulation/is-chunk-ready",{
-        headers:{
-          'Accept': 'application/json'
-        }
-      })
-            .then((r) => {
-            this.isReady = r.data
-            if(!this.isReady)console.log("Jeszcze nie gotowe")
-        });
-        if(!this.isReady) return*/
+        if(this.pause) return
         await axios.get("http://127.0.0.1:5000/api/simulation/extract-frame",{
         headers:{
           'Accept': 'application/json'
         }
       })
             .then((r) => {
-            this.devs = r.data.devices;
-            this.time = r.data.time;
-            this.packets = r.data.packets;
+                  this.status = r.status
+                  this.data = r.data
+                  
+                  this.index = 0
+                  
+            
         });
-      },200)
+      },2000),
+
+      setInterval(()=>{
+        if(this.status!=200)
+          return
+        if(this.index>=10)
+          this.index = 0
+        if(this.data[this.index] == undefined){
+          this.packets = []
+          return
+        }
+
+          
+        this.devs = this.data[this.index].devices;
+        this.time = this.data[this.index].time;
+        this.packets = this.data[this.index].packets;
+        this.delay = this.data[this.index].average_delay;
+        this.delivery_r = this.data[this.index].delivery_ratio;
+        this.normalized_routing_load = this.data[this.index].normalized_routing_load;
+        this.data[this.index] = []
+        this.index++;
+        },200)
     }
+
+
 
     ,
     methods:{
@@ -98,7 +121,19 @@ export default {
       Paused:function(){
         if (!this.pause) this.pause = true;
         else this.pause = false;
-      }
+      },
+
+      setIntervalX(callback, delay, repetitions) {
+      var x = 0;
+      var intervalID = window.setInterval(function () {
+
+        callback();
+
+        if (++x === repetitions) {
+          window.clearInterval(intervalID);
+        }
+        }, delay);
+        }
 
     },
       

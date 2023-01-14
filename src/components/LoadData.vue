@@ -45,6 +45,10 @@
             <button class="teal" @click="DeleteAll">Delete All</button>
         </div>
         <div class="form-group">
+            <label for="time_of_sim">Simulaton time (ms)</label>
+            <input type="text" class="form-control" id="time_of_sim"/>
+        </div>
+        <div class="form-group">
             <label for="sf">Spreading factor</label>
             <input type="text" class="form-control" id="sf"/>
         </div>
@@ -189,11 +193,12 @@ export default{
         },
 
         async ClickedParams(){
+            let _st = document.querySelector('#time_of_sim').value
             let _sf = document.querySelector('#sf').value;
             let _b = document.querySelector('#bandwidth').value;
             let _phy = document.querySelector('#phy').value;
 
-            if(_sf == '' || _b == '' || _phy == '')
+            if(_sf == '' || _b == '' || _phy == '' || _st == '')
             {
                 alert("Spreading factor, Bandwidth or Phy header length can't be empty!!!");
                 return
@@ -203,6 +208,7 @@ export default{
                 method:'post',
                 url:'http://127.0.0.1:5000/api/simulation/params',
                 data: {
+                    simulation_time: _st,
                     spreading_factor: _sf,
                     bandwidth: _b,
                     phy_header_length:_phy

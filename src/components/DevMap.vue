@@ -1,11 +1,13 @@
 <template>
-    <h1>{{ time }}</h1>
+    <h1 v-if="this.$props.time.valueOf().toString()!='function Number() { [native code] }'">{{ time }} </h1>
      <div id="map"></div>
      <div id = "Stats">
         <h1>Stats</h1>
         <table class="tab">
-            <tr>name, lost (tx), delivered (tx), source</tr>
-            <tr :key = "index" v-for="(dev,index) in stats">{{dev}}</tr>
+            <tr>delay: {{ delay }} </tr>
+            <!--<tr :key = "index" v-for="(dev,index) in stats">{{dev}}</tr>-->
+            <tr>delivery ratio: {{ delivery_r}} </tr>
+            <tr>normalized routing load: {{ normalized_routing_load   }}</tr>
         </table>
      </div>
 </template>
@@ -23,6 +25,9 @@ export default{
         time: Number,
         packets: Array,
         pause: Boolean,
+        delay: Number,
+        delivery_r:Number,
+        normalized_routing_load:Number,
 
     },
     data: function () {
@@ -30,13 +35,14 @@ export default{
             key:0,
             tab:[],
             timeold:0,
-            stats:[]
+            stats:[],
         };
     },
     
     methods:{
         
         show_nodes(map){
+            console.log(this.$props.time.valueOf().toString())
             if(this.$props.pause) return
 
             if(this.$props.devs.length == 0){
@@ -157,9 +163,6 @@ export default{
                 for(let j = 0; j<packages[i].length;j++){
                     
                     for(let k = 0;k<places.length;k++){
-                        if(packages[i][j] == 'alfa'){
-                            console.log("!!!!!!!!!",packages[i][j])
-                        }
 
                         
                         if (places[k][0] == packages[i][j]){
@@ -288,8 +291,6 @@ export default{
         
     },
     mounted:function(){
-        
-        
         this.createMap();
 /*
         setInterval( ()=>{
