@@ -5,7 +5,6 @@
 <script>
 import L from 'leaflet'
 import axios from 'axios'
-//import shared from '../store/shared.js'
 
 export default{
     name: "StartMap",
@@ -19,6 +18,7 @@ export default{
         show_nodes(map){
             if(this.devs.length == 0){
                 console.warn("Nie udało się załadować danych z devs w DevMap - spróbuj ponownie")
+                return
             }
             //var markers = L.markerClusterGroup();
             
@@ -39,7 +39,7 @@ export default{
             var markerLayer = L.layerGroup(markers);
             markerLayer.addTo(map)
 
-            setInterval(()=>{this.clearMap(map,markers);},200)
+            setInterval(()=>{this.clearMap(map,markers);},2000)
 
 
         },
@@ -69,13 +69,12 @@ export default{
             }).addTo(map);  
 
             
-            setInterval(()=>{ this.show_nodes(map);},200)
+            setInterval(()=>{ this.show_nodes(map);},2000)
 
             function onMapClick(e) {
+                var popup = L.popup();
                 console.log(e.latlng);
-                //shared.setLatLng(e.latlng.lat,e.latlng.lng)
-                //console.log(shared.lat)
-
+                popup.setLatLng(e.latlng).setContent(e.latlng.toString()).openOn(map);
             }           
            
             map.on('click',onMapClick)
