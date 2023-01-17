@@ -1,5 +1,7 @@
 # frontv2
 
+## Frontend do projektu na symulację systemów dyskretnych
+
 ## Project setup
 ```
 npm install
