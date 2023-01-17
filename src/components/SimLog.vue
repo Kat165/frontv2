@@ -1,5 +1,5 @@
 <template>
-<h1 class="text-center">Logi</h1>
+<h1 class="text-center">Logs</h1>
 <ul id="log-text"></ul>
 </template>
 
@@ -22,7 +22,6 @@ export default{
 
 
             var htmls = []
-            console.log(this.$props.packets)
         
             for(var index = 0; index<this.$props.packets.length;index++){
 

@@ -42,11 +42,10 @@ export default{
     methods:{
         
         show_nodes(map){
-            console.log(this.$props.time.valueOf().toString())
             if(this.$props.pause) return
 
             if(this.$props.devs.length == 0){
-                console.warn("Nie udało się załadować danych z devs w DevMap - spróbuj ponownie")
+                return
             }
             //var markers = L.markerClusterGroup();
 
@@ -55,7 +54,12 @@ export default{
             for (let index = 0; index < this.$props.devs.length; index++) {
                 
                 var marker = L.marker([this.$props.devs[index].lat,this.devs[index].lon])
-                marker.bindPopup(this.$props.devs[index].name + `<p>Wysokość:</p>` + this.$props.devs[index].alt).openPopup();
+                for(let m = 0; m<this.stats.length; m++){
+                            if(this.$props.devs[index].name == this.stats[m][0]){
+                                let d = this.stats[m][2]/(this.stats[m][2]+this.stats[m][1])
+                                marker.bindPopup(this.stats[m][0] + `<p>Delivered:</p>` + d).openPopup();
+                            }
+                        }
                  
                 
                 
@@ -78,7 +82,7 @@ export default{
         show_nodes2(map){
             if(this.$props.pause) return
             if(this.$props.devs.length == 0){
-                console.warn("Nie udało się załadować danych z devs w DevMap - spróbuj ponownie")
+                return
             }
             //var markers = L.markerClusterGroup();
 
@@ -106,7 +110,12 @@ export default{
                 {
                     if(this.$props.devs[index].name == packages[k]){
                         var marker = L.marker([this.$props.devs[index].lat,this.devs[index].lon], {icon: greenIcon})
-                        marker.bindPopup(this.$props.devs[index].name + `<p>Wysokość:</p>` + this.$props.devs[index].alt).openPopup();
+                        for(let m = 0; m<this.stats.length; m++){
+                            if(this.$props.devs[index].name == this.stats[m][0]){
+                                let d = this.stats[m][2]/(this.stats[m][2]+this.stats[m][1])
+                                marker.bindPopup(this.stats[m][0] + `<p>Delivered:</p>` + d).openPopup();
+                            }
+                        }
                         markers.push(marker);
                     }
                 }
@@ -127,10 +136,10 @@ export default{
         show_paths(map){
             if(this.$props.pause) return
             if(this.$props.devs.length == 0){
-                console.warn("Nie udało się załadować danych z devs w DevMap - spróbuj ponownie")
+                return
             }
             if(this.$props.packets.length == 0){
-                console.warn("Nie udało się załadować danych z packets w DevMap - spróbuj ponownie")
+                return
             }
             /*
             for(let index = 0; index < this.$props.devs.length; index++){
@@ -170,7 +179,6 @@ export default{
                                 line.push([places[k][1],places[k][2],packages[i][2],packages[i][3]])
                             }catch{
                                 console.log("weird bug with packages[i][3]",i)
-                                console.log(packages)
                             }
                             
                     }
@@ -214,6 +222,27 @@ export default{
             }*/
             this.timeold = this.$props.time
 
+            setInterval(()=>{this.clearMap(map,cords);},200)
+                       
+        },
+        clearMap(map,markers){/*
+            map.eachLayer(function(layer) {
+                if (!(layer instanceof L.tileLayer)){
+                    console.log(layer);
+                }
+                
+            })*/
+
+            if(this.$props.pause) return
+
+            markers.forEach(function(marker) {
+                map.removeLayer(marker)
+    
+            })
+
+        },
+
+        calcStats(){
             //stats
             //[name,lost (tx),notlost (tx),sourceonly]
 
@@ -247,25 +276,7 @@ export default{
                     }
                 }
             }
-
-            setInterval(()=>{this.clearMap(map,cords);},200)
-                       
-        },
-        clearMap(map,markers){/*
-            map.eachLayer(function(layer) {
-                if (!(layer instanceof L.tileLayer)){
-                    console.log(layer);
-                }
-                
-            })*/
-
-            if(this.$props.pause) return
-
-            markers.forEach(function(marker) {
-                map.removeLayer(marker)
-    
-            })
-
+            console.log(this.stats)
         },
         
         createMap(){
@@ -274,19 +285,18 @@ export default{
                 maxZoom: 19,
                 attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
             }).addTo(map);
-            
-            
+            setInterval(()=>{this.calcStats();},200);
             setInterval(()=>{this.show_nodes(map);},200);
             setInterval(()=>{this.show_nodes2(map)},200);
             setInterval(()=>{this.show_paths(map);},200);
             
             
         },
-
+/*
         forceRerender() {
       this.key += 1;
       console.log(this.key);
-    }
+    }*/
 
         
     },
