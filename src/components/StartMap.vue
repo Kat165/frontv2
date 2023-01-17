@@ -21,6 +21,7 @@ export default{
                 console.warn("Nie udało się załadować danych z devs w DevMap - spróbuj ponownie")
             }
             //var markers = L.markerClusterGroup();
+            
             var markers = [];
             for (let index = 0; index < this.devs.length; index++) {
                 var marker = L.marker([this.devs[index].path[0].lat,this.devs[index].path[0].lon]);

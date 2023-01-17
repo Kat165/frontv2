@@ -95,6 +95,27 @@ export default{
             let _lon = document.querySelector('#lon').value;
             let _alt = document.querySelector('#he').value;
 
+            let _time_table = _time.split(',');
+            let _lat_table = _lat.split(',');
+            let _lon_table = _lon.split(',');
+            let _alt_table = _alt.split(',');
+            let json_path_table = [];
+
+            if(_time_table.length != _lat_table.length || _lat_table.length != _lon_table.length || _alt_table.length!= _lon_table.length){
+                alert("Wrong data format in time, latitude, longitude and altitude")
+                return
+            }
+            for (let i = 0; i < _time_table.length; i++) {
+                let small_tab = {}
+                small_tab["time"] = _time_table[i]
+                small_tab["lat"] = _lat_table[i]
+                small_tab["lon"] = _lon_table[i]
+                small_tab["alt"] = _alt_table[i]
+                json_path_table.push(small_tab)
+                
+            }
+            console.log(json_path_table)
+
             
             
             await this.getDevs();
@@ -125,14 +146,7 @@ export default{
                 data: {
                     name: _name,
                     tx_power: _tx_power,
-                    path: [
-                        {
-                            time: _time,
-                            lat: _lat,
-                            lon: _lon,
-                            alt: _alt
-                        }
-                    ],
+                    path: json_path_table,
                     transmissions:[ ]
 
                 }
@@ -144,14 +158,7 @@ export default{
                 data: {
                     name: _name,
                     tx_power:_tx_power,
-                    path: [
-                        {
-                            time: _time,
-                            lat: _lat,
-                            lon: _lon,
-                            alt: _alt
-                        }
-                    ],
+                    path: json_path_table,
                     transmissions:[
                         {
                             data: _data,
@@ -178,6 +185,27 @@ export default{
             document.querySelector('#int').value ='';
             document.querySelector('#len').value ='';
             document.querySelector('#dest').value ='';*/
+        },
+
+         convertToJSON(array) {/*
+            var objArray = [];
+            for (var i = 1; i < array.length; i++) {
+                objArray[i - 1] = {};
+                for (var k = 0; k < array[0].length && k < array[i].length; k++) {
+                    var key = array[0][k];
+                    objArray[i - 1][key] = array[i][k]
+                }
+            }*/
+            var objArray = [];
+            for (var i = 0; i < array.length; i++) {
+                objArray[i] = {};
+                for (var k = 0; k < array[0].length && k < array[i].length; k++) {
+                    var key = array[0][k];
+                    objArray[i - 1][key] = array[i][k]
+
+                }
+            }
+            return objArray;
         },
 
         async DeleteAll(){
