@@ -1,4 +1,5 @@
 <template>
+<h1 class="text-center">Frame: {{ time_t() }} </h1>
 <h1 class="text-center">Logs</h1>
 <ul id="log-text"></ul>
 </template>
@@ -9,9 +10,15 @@ export default{
     name: 'SimLog',
     props:{
         packets:Array,
-        pause: Boolean
+        pause: Boolean,
+        time: Number
     },
     methods:{
+        time_t(){
+            if(this.$props.time.valueOf().toString() =='function Number() { [native code] }')
+                return 0
+            else return this.$props.time
+        },
         appendLogs(){
             if(this.$props.pause) return
             if(this.$props.packets.length == 0) return
@@ -67,7 +74,7 @@ export default{
 <style lang="scss">
 
 ul{
-    height: 75vh;
+    height: 55vh;
     overflow-y: scroll;
 }
 

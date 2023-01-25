@@ -1,15 +1,6 @@
 <template>
-    <h1 v-if="this.$props.time.valueOf().toString()!='function Number() { [native code] }'">{{ time }} </h1>
+    <!--<h1 v-if="this.$props.time.valueOf().toString()!='function Number() { [native code] }'">{{ time }} </h1>-->
      <div id="map"></div>
-     <div id = "Stats">
-        <h1>Stats</h1>
-        <table class="tab">
-            <tr>delay: {{ delay }} </tr>
-            <!--<tr :key = "index" v-for="(dev,index) in stats">{{dev}}</tr>-->
-            <tr>delivery ratio: {{ delivery_r}} </tr>
-            <tr>normalized routing load: {{ normalized_routing_load   }}</tr>
-        </table>
-     </div>
 </template>
 
 <script>
@@ -28,6 +19,7 @@ export default{
         delay: Number,
         delivery_r:Number,
         normalized_routing_load:Number,
+        interval:Number,
 
     },
     data: function () {
@@ -44,6 +36,10 @@ export default{
         show_nodes(map){
             if(this.$props.pause) return
 
+            if(this.$props.devs == undefined){
+                return
+            }
+
             if(this.$props.devs.length == 0){
                 return
             }
@@ -57,6 +53,7 @@ export default{
                 for(let m = 0; m<this.stats.length; m++){
                             if(this.$props.devs[index].name == this.stats[m][0]){
                                 let d = this.stats[m][2]/(this.stats[m][2]+this.stats[m][1])
+                                d = d.toFixed(2)
                                 marker.bindPopup(this.stats[m][0] + `<p>Delivered:</p>` + d).openPopup();
                             }
                         }
@@ -74,13 +71,17 @@ export default{
             markerLayer.addTo(map)
 
             
-            setInterval(()=>{this.clearMap(map,markers);},200)
+            setInterval(()=>{this.clearMap(map,markers);},this.interval)
 
 
             
         },
         show_nodes2(map){
             if(this.$props.pause) return
+
+            if(this.$props.devs == undefined)
+                return
+
             if(this.$props.devs.length == 0){
                 return
             }
@@ -113,6 +114,7 @@ export default{
                         for(let m = 0; m<this.stats.length; m++){
                             if(this.$props.devs[index].name == this.stats[m][0]){
                                 let d = this.stats[m][2]/(this.stats[m][2]+this.stats[m][1])
+                                d = d.toFixed(2)
                                 marker.bindPopup(this.stats[m][0] + `<p>Delivered:</p>` + d).openPopup();
                             }
                         }
@@ -130,11 +132,19 @@ export default{
             markerLayer.addTo(map)
 
             
-            setInterval(()=>{this.clearMap(map,markers);},200)
+            setInterval(()=>{this.clearMap(map,markers);},this.interval)
         },
         
         show_paths(map){
             if(this.$props.pause) return
+
+            if(this.$props.devs == undefined)
+                return
+
+            if(this.$props.packets == undefined)
+                return
+
+
             if(this.$props.devs.length == 0){
                 return
             }
@@ -222,7 +232,7 @@ export default{
             }*/
             this.timeold = this.$props.time
 
-            setInterval(()=>{this.clearMap(map,cords);},200)
+            setInterval(()=>{this.clearMap(map,cords);},this.interval)
                        
         },
         clearMap(map,markers){/*
@@ -243,6 +253,19 @@ export default{
         },
 
         calcStats(){
+            if(this.$props.pause) return
+            if(this.$props.devs == undefined)
+                return
+
+            if(this.$props.packets == undefined)
+                return
+
+            if(this.$props.devs.length == 0){
+                return
+            }
+            if(this.$props.packets.length == 0){
+                return
+            }
             //stats
             //[name,lost (tx),notlost (tx),sourceonly]
 
@@ -276,7 +299,6 @@ export default{
                     }
                 }
             }
-            console.log(this.stats)
         },
         
         createMap(){
@@ -285,10 +307,10 @@ export default{
                 maxZoom: 19,
                 attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
             }).addTo(map);
-            setInterval(()=>{this.calcStats();},200);
-            setInterval(()=>{this.show_nodes(map);},200);
-            setInterval(()=>{this.show_nodes2(map)},200);
-            setInterval(()=>{this.show_paths(map);},200);
+            setInterval(()=>{this.calcStats();},this.interval);
+            setInterval(()=>{this.show_nodes(map);},this.interval);
+            setInterval(()=>{this.show_nodes2(map)},this.interval);
+            setInterval(()=>{this.show_paths(map);},this.interval);
             
             
         },
@@ -314,7 +336,7 @@ export default{
 
 <style lang = "scss" scoped>
 #map{
-    height: 90vh;
+    height: 95vh;
 }
 </style>
 

@@ -17,7 +17,6 @@ export default{
 
         show_nodes(map){
             if(this.devs.length == 0){
-                console.warn("Nie udało się załadować danych z devs w DevMap - spróbuj ponownie")
                 return
             }
             //var markers = L.markerClusterGroup();
@@ -101,7 +100,7 @@ export default{
     },
     mounted:function(){
 
-        setInterval(()=>{this.getDevs();},200)
+        setInterval(()=>{this.getDevs();},2000)
         this.createMap();
 
 
@@ -114,6 +113,6 @@ export default{
 
 <style lang="scss">
 #map{
-    height: 90vh;
+    height: 95vh;
 }
 </style>

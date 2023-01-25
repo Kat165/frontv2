@@ -316,7 +316,17 @@ async function setDevice(device_id,latitude,longitude,height){
 }
 
 #options{
-    height: 85vh;
+    height: 90vh;
     overflow-y: scroll;
 }
+
+.teal{
+    background-color: lightgray;
+    border-radius: 4px;
+}
+
+.teal:hover{
+    background-color: grey;
+}
+
 </style>
