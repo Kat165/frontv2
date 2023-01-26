@@ -2,10 +2,10 @@
     <div id = "Stats">
         <h1 class="text-center">Stats</h1>
         <ul class="tab">
-            <li>delay: {{ delay_t() }} </li>
+            <li>delay: {{ delay_t().toFixed(3) }} </li>
             <!--<tr :key = "index" v-for="(dev,index) in stats">{{dev}}</tr>-->
-            <li>delivery ratio: {{ del_t() }} </li>
-            <li>normalized routing load: {{ nor_t() }}</li>
+            <li>delivery ratio: {{ del_t().toFixed(3) }} </li>
+            <li>normalized routing load: {{ nor_t().toFixed(3) }}</li>
         </ul>
      </div>
 </template>

@@ -23,7 +23,9 @@ export default{
             
             var markers = [];
             for (let index = 0; index < this.devs.length; index++) {
-                var marker = L.marker([this.devs[index].path[0].lat,this.devs[index].path[0].lon]);
+                var icon = new L.Icon.Default();
+                icon.options.shadowSize = [0,0];
+                var marker = L.marker([this.devs[index].path[0].lat,this.devs[index].path[0].lon], {icon : icon});
                 marker.bindPopup(this.devs[index].name + '<br>' + 
                     this.devs[index].path[0].lat + '<br>' + 
                     this.devs[index].path[0].lon + '<br>' + 

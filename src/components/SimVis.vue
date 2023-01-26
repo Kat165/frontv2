@@ -18,8 +18,8 @@
         
         <!-- DevList -->
         
-        <DevMap v-if="click" :devs="devs" :time = "time" :packets = "packets" :key = "key" :pause = "pause"
-         :delay="delay" :delivery_r="delivery_r" :normalized_routing_load="normalized_routing_load" :interval="interval"/>
+        <DevMap v-if="click" :devs="devs" :time = "time" :packets = "packets" :pause = "pause"
+         :delay="delay" :delivery_r="delivery_r" :normalized_routing_load="normalized_routing_load" :interval="interval" />
         <StartMap v-if="!click"/>
 
       </div>
@@ -57,7 +57,7 @@ export default {
   data: function () {
         return {
             data: [],
-            devs: [],
+            devs: [] || undefined,
             time: Number,
             packets: [],
             click :false,
@@ -88,29 +88,60 @@ export default {
                   this.times = []
                   this.status = r.status
                   this.data = r.data
-                  this.interval = parseInt(5000/this.data.length) 
+                  
                   this.index = 0
-                  console.log(this.data.length)
                   for (let i = 0; i < this.data.length -1; i++) {
                     this.times.push((this.data[i+1].time - this.data[i].time))             
                   }
                   this.times.push((this.icc*5000 - this.data[this.data.length -1].time))
+                  if(this.imm>=this.data.length) this.imm=0
+                  
+                  
 
-                  console.log(this.times)
-                  let sum = 0
-
-                  for (let index = 0; index < this.times.length; index++) {
-                    sum += this.times[index];
-                    
-                  }
-                  console.log(sum)
+                  //this.interval = this.times[0]
+                  this.interval = 5000/this.data.length
+                  
                   this.icc++
+                  /*
+                  var counter = this.interval;
+                  setTimeout(myFunction(this.times, this.index, this.data), counter);*/
         });
-      },5000),
+      },5000)
+      
+/*
+      var c =0;
+      var myFunction = function(t, i, d,) {
+        console.log(t)
+        if(c>=t) this.imm=0
+        if(i>=d.length)
+          return
+        if(d[i] == undefined){
+          this.packets = []
+          return
+        }
+        console.log(d[i].devices)
+        if(this.devs != undefined)
+          this.devs = d[i].devices;
+        console.log("XXX")
+        this.time = d[i].time;
+        this.packets = d[i].packets;
+        this.delay = d[i].average_delay;
+        this.delivery_r = d[i].delivery_ratio;
+        this.normalized_routing_load = d[i].normalized_routing_load;
+        d[i] = []
+        i++;
 
-      setInterval(()=>{
-        this.interval = this.times[this.imm]
-        this.imm++
+
+        this.c++;
+        console.log(t[c])
+        setTimeout(myFunction, t[c]);
+      }
+      
+
+      this.setDeceleratingTimeout(()=>{
+        if(!this.click) return
+        if(this.pause) return
+        
         if(this.status!=200)
           return
         if(this.index>=this.data.length)
@@ -129,6 +160,37 @@ export default {
         this.normalized_routing_load = this.data[this.index].normalized_routing_load;
         this.data[this.index] = []
         this.index++;
+
+      })
+      
+*/
+      setInterval(()=>{
+        if(!this.click) return
+        if(this.pause) return
+        if (this.imm>= this.data.length) {
+          this.imm = 0
+          
+        }
+        this.imm++
+        //this.interval = this.times[this.imm]
+        
+        if(this.status!=200)
+          return
+        if(this.index>=this.data.length)
+          return
+        if(this.data[this.index] == undefined){
+          this.packets = []
+          return
+        }
+
+        this.devs = this.data[this.index].devices;
+        this.time = this.data[this.index].time;
+        this.packets = this.data[this.index].packets;
+        this.delay = this.data[this.index].average_delay;
+        this.delivery_r = this.data[this.index].delivery_ratio;
+        this.normalized_routing_load = this.data[this.index].normalized_routing_load;
+        this.data[this.index] = []
+        this.index++;
         },this.interval)
     }
 
@@ -136,6 +198,22 @@ export default {
 
     ,
     methods:{
+      setDeceleratingTimeout:function(callback,factor,xtimes)
+      {
+        var internalCallback = function(tick, counter) {
+          return function() {
+            if (--tick >= 0) {
+                window.setTimeout(internalCallback, ++counter*xtimes);
+                callback();
+            }
+          }
+      }(xtimes, 0);
+
+      window.setTimeout(internalCallback, factor);
+    },
+
+
+
       Clicked:function(){
         if (!this.click) this.click = true;
         else this.click = false;
@@ -177,11 +255,15 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss" scoped>
+.container{
+  min-width: 100%;
+}
 .row{
   padding-top: 10px;
   display:flex;
   justify-content: center;
   align-items:flex-start;
+  min-width: 120vh;
 }
 
 .center {
@@ -189,4 +271,6 @@ export default {
   justify-content: center;
   align-items: center;
 }
+
+
 </style>

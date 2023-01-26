@@ -24,7 +24,6 @@ export default{
     },
     data: function () {
         return {
-            key:0,
             tab:[],
             timeold:0,
             stats:[],
@@ -49,11 +48,17 @@ export default{
             var markers = [];
             for (let index = 0; index < this.$props.devs.length; index++) {
                 
-                var marker = L.marker([this.$props.devs[index].lat,this.devs[index].lon])
+                var icon = new L.Icon.Default();
+                icon.options.shadowSize = [0,0];
+                var marker = L.marker([this.$props.devs[index].lat,this.devs[index].lon], {icon : icon})
                 for(let m = 0; m<this.stats.length; m++){
                             if(this.$props.devs[index].name == this.stats[m][0]){
                                 let d = this.stats[m][2]/(this.stats[m][2]+this.stats[m][1])
                                 d = d.toFixed(2)
+                                
+                                if(isNaN(d)){
+                                    d = 0
+                                }
                                 marker.bindPopup(this.stats[m][0] + `<p>Delivered:</p>` + d).openPopup();
                             }
                         }
@@ -101,7 +106,7 @@ export default{
                 iconSize: [25, 41],
                 iconAnchor: [12, 41],
                 popupAnchor: [1, -34],
-                shadowSize: [41, 41]
+                shadowSize: [0, 0]
             });
             
             var markers = [];
@@ -111,10 +116,16 @@ export default{
                 {
                     if(this.$props.devs[index].name == packages[k]){
                         var marker = L.marker([this.$props.devs[index].lat,this.devs[index].lon], {icon: greenIcon})
+                        
                         for(let m = 0; m<this.stats.length; m++){
                             if(this.$props.devs[index].name == this.stats[m][0]){
+                                console.log(this.stats[m][2],this.stats[m][1])
                                 let d = this.stats[m][2]/(this.stats[m][2]+this.stats[m][1])
                                 d = d.toFixed(2)
+                                
+                                if(isNaN(d)){
+                                    d = 0
+                                }
                                 marker.bindPopup(this.stats[m][0] + `<p>Delivered:</p>` + d).openPopup();
                             }
                         }
@@ -165,12 +176,22 @@ export default{
             var packages = []
             
             for(let index = 0; index < this.$props.packets.length; index++){
-                if(this.$props.packets[index].destination != undefined){
+                /*if(this.$props.packets[index].destination != undefined){
                     if(this.$props.packets[index].lost){
-                        packages.push([this.$props.packets[index].rx,this.$props.packets[index].tx,{color: 'red'},this.$props.packets[index].duration])
+                        //packages.push([this.$props.packets[index].rx,this.$props.packets[index].tx,{color: 'red'},this.$props.packets[index].duration])
                     }else
-                        packages.push([this.$props.packets[index].rx,this.$props.packets[index].tx,{color: 'green'},this.$props.packets[index].duration])
-                }
+                        //packages.push([this.$props.packets[index].rx,this.$props.packets[index].tx,{color: 'green'},this.$props.packets[index].duration])
+                    
+                    
+                       
+
+                }*/
+                if(!this.$props.packets[index].lost){
+                if(this.$props.packets[index].destination != undefined)
+                packages.push([this.$props.packets[index].source,this.$props.packets[index].destination,{color:"#0000ffaa"},this.$props.packets[index].duration])
+                else
+                packages.push([this.$props.packets[index].rx,this.$props.packets[index].tx,{color: 'green'},this.$props.packets[index].duration])
+            }
             }
             var places = [];
             for(let i = 0; i<this.$props.devs.length; i++){
@@ -284,12 +305,12 @@ export default{
                             }
                                 
                         }
-                        }else{
-                            for (let j = 0; j < this.stats.length; j++) {
+                    }else{
+                        for (let j = 0; j < this.stats.length; j++) {
                             if(this.$props.packets[index].tx == this.stats[j][0])
                                 this.stats[j][2] = parseInt(1 + parseInt(this.stats[j][2]))
                             }
-                        }
+                    }
                         
                 }
                 else{
